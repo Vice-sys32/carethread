@@ -1,0 +1,111 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  --color-app: #f7f8fa;
+  --color-surface: #ffffff;
+  --color-line: #e3e6eb;
+  --color-line-strong: #cbd0d8;
+  --color-ink: #14181f;
+  --color-secondary: #4a5361;
+  --color-muted: #6b7480;
+
+  --color-accent: #0f766e;
+  --color-accent-strong: #115e59;
+  --color-accent-tint: #e6f2f1;
+
+  --color-success: #15803d;
+  --color-success-tint: #eaf5ee;
+  --color-warning: #a16207;
+  --color-warning-tint: #fbf3e1;
+  --color-danger: #b42318;
+  --color-danger-tint: #fcecea;
+  --color-info: #1d4ed8;
+  --color-info-tint: #eaf0fd;
+
+  --color-slate-tint: #e9edf2;
+  --color-slate-ink: #3f4a5a;
+  --color-gray-tint: #f0f1f3;
+
+  --radius-input: 6px;
+  --radius-card: 8px;
+
+  --shadow-overlay: 0 8px 24px rgba(20, 24, 31, 0.12);
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+  }
+
+  body {
+    @apply bg-app font-sans text-sm leading-relaxed text-ink antialiased;
+  }
+
+  ::placeholder {
+    @apply text-muted;
+  }
+}
+
+/* Minimal 150ms entrance transitions for overlays (Radix sets data-state). */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(24px);
+  }
+}
+
+@keyframes drawer-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-24px);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
+
+.overlay-anim[data-state="open"] {
+  animation: overlay-in 150ms ease-out;
+}
+
+.modal-anim[data-state="open"] {
+  animation: modal-in 150ms ease-out;
+}
+
+.drawer-anim[data-state="open"] {
+  animation: drawer-in 150ms ease-out;
+}
+
+.drawer-anim-left[data-state="open"] {
+  animation: drawer-in-left 150ms ease-out;
+}
+
+.toast-anim {
+  animation: toast-in 150ms ease-out;
+}
+
+@media print {
+  body {
+    background: #ffffff;
+  }
+}
