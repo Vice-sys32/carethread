@@ -34,7 +34,7 @@ export function ScannerModal({ open, onClose, onScan }: ScannerModalProps) {
     (async () => {
       try {
         if (!navigator.mediaDevices?.getUserMedia) {
-          setError("Camera is not available in this browser. Paste the link instead.");
+          setError("Camera is not available in this browser. Paste the link or token instead.");
           return;
         }
         const { Html5Qrcode: Html5QrcodeClass } = await import("html5-qrcode");
@@ -55,7 +55,7 @@ export function ScannerModal({ open, onClose, onScan }: ScannerModalProps) {
         if (caught instanceof Error && caught.name === "NotAllowedError") {
           setError("Camera permission was denied. Allow camera access or paste the link instead.");
         } else {
-          setError("Unable to start the camera. Paste the link instead.");
+          setError("Unable to start the camera. Paste the link or token instead.");
         }
       }
     })();
@@ -74,11 +74,14 @@ export function ScannerModal({ open, onClose, onScan }: ScannerModalProps) {
   }, [open, handleDecoded]);
 
   return (
-    <Modal open={open} onClose={onClose} title="Scan QR code" description="Point the camera at the patient's access code.">
+    <Modal open={open} onClose={onClose} title="Scan Patient QR Code" description="Align the patient's CareThread QR code within the frame to verify consent.">
       {error ? (
-        <p className="text-sm text-danger">{error}</p>
+        <p className="text-xs text-danger rounded bg-danger-tint p-3 border border-danger/30">{error}</p>
       ) : (
-        <div id="qr-reader-region" className="overflow-hidden rounded-input border border-line" />
+        <div className="flex flex-col gap-2">
+          <div id="qr-reader-region" className="overflow-hidden rounded-input border-2 border-leaf/40 bg-black min-h-[260px] shadow-subtle" />
+          <p className="text-[11px] text-muted text-center">Ensure sufficient lighting and keep the code steady.</p>
+        </div>
       )}
     </Modal>
   );

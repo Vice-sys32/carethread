@@ -26,10 +26,19 @@ const variantIcon = {
   info: LuInfo,
 } as const;
 
-const variantAccent = {
-  success: { border: "border-l-success", text: "text-success" },
-  danger: { border: "border-l-danger", text: "text-danger" },
-  info: { border: "border-l-info", text: "text-info" },
+const variantClasses = {
+  success: {
+    border: "border-l-4 border-l-leaf",
+    badge: "bg-mint text-forest",
+  },
+  danger: {
+    border: "border-l-4 border-l-danger",
+    badge: "bg-danger-tint text-danger",
+  },
+  info: {
+    border: "border-l-4 border-l-forest",
+    badge: "bg-mint text-forest",
+  },
 } as const;
 
 export function ToastProvider({ children }: { children: ReactNode }) {
@@ -48,20 +57,23 @@ export function ToastProvider({ children }: { children: ReactNode }) {
       {children}
       <div
         aria-live="polite"
-        className="pointer-events-none fixed bottom-4 left-4 right-4 z-[70] flex flex-col items-end gap-2 sm:left-auto sm:w-80"
+        className="pointer-events-none fixed bottom-5 left-4 right-4 z-[70] flex flex-col items-end gap-2.5 sm:left-auto sm:w-88"
       >
         {items.map((toast) => {
           const Icon = variantIcon[toast.variant];
+          const styling = variantClasses[toast.variant];
           return (
             <div
               key={toast.id}
               className={cn(
-                "toast-anim pointer-events-auto flex w-full items-start gap-2.5 rounded-card border border-l-2 border-line bg-surface p-3 shadow-overlay",
-                variantAccent[toast.variant].border,
+                "toast-anim pointer-events-auto flex w-full items-start gap-3 rounded-card border border-line bg-surface p-3.5 shadow-overlay",
+                styling.border,
               )}
             >
-              <Icon aria-hidden className={cn("mt-0.5 size-4 shrink-0", variantAccent[toast.variant].text)} />
-              <p className="text-[13px] leading-5 text-ink">{toast.title}</p>
+              <div className={cn("mt-0.5 flex size-5 items-center justify-center rounded-full shrink-0", styling.badge)}>
+                <Icon aria-hidden className="size-3.5" />
+              </div>
+              <p className="text-[13px] font-medium leading-5 text-ink">{toast.title}</p>
             </div>
           );
         })}

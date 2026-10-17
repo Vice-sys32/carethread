@@ -17,7 +17,7 @@ export function Modal({ open, onClose, title, description, children, size = "sm"
   return (
     <Dialog.Root open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
       <Dialog.Portal>
-        <Dialog.Overlay className="overlay-anim fixed inset-0 z-50 bg-ink/40" />
+        <Dialog.Overlay className="overlay-anim fixed inset-0 z-50 bg-forest-dark/40 backdrop-blur-xs" />
         <Dialog.Content className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-4 focus:outline-none">
           <div
             className={cn(
@@ -25,17 +25,21 @@ export function Modal({ open, onClose, title, description, children, size = "sm"
               size === "sm" ? "max-w-sm" : "max-w-md",
             )}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-3.5">
-              <Dialog.Title className="text-sm font-semibold text-ink">{title}</Dialog.Title>
+            <div className="flex items-start justify-between gap-4 border-b border-line bg-app/30 px-5 py-3.5 rounded-t-card">
+              <Dialog.Title className="text-sm font-semibold tracking-tight text-ink">{title}</Dialog.Title>
               <Dialog.Close
                 aria-label="Close"
-                className="-m-1 rounded p-1 text-muted transition-colors duration-150 hover:bg-app hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="-m-1 rounded-input p-1 text-muted transition-colors duration-150 hover:bg-mint/40 hover:text-forest-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf"
               >
                 <LuX aria-hidden className="size-4" />
               </Dialog.Close>
             </div>
             <div className="px-5 py-4">
-              {description ? <Dialog.Description className="text-sm text-secondary">{description}</Dialog.Description> : null}
+              {description ? (
+                <Dialog.Description className="text-sm text-secondary leading-relaxed">
+                  {description}
+                </Dialog.Description>
+              ) : null}
               <div className={description ? "mt-4" : undefined}>{children}</div>
             </div>
           </div>

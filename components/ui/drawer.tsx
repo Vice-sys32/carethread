@@ -15,11 +15,20 @@ interface DrawerProps {
   width?: "md" | "lg" | "full";
 }
 
-export function Drawer({ open, onClose, title, description, children, footer, side = "right", width = "md" }: DrawerProps) {
+export function Drawer({
+  open,
+  onClose,
+  title,
+  description,
+  children,
+  footer,
+  side = "right",
+  width = "md",
+}: DrawerProps) {
   return (
     <Dialog.Root open={open} onOpenChange={(next) => { if (!next) onClose(); }}>
       <Dialog.Portal>
-        <Dialog.Overlay className="overlay-anim fixed inset-0 z-50 bg-ink/40" />
+        <Dialog.Overlay className="overlay-anim fixed inset-0 z-50 bg-forest-dark/40 backdrop-blur-xs" />
         <Dialog.Content
           className={cn(
             "pointer-events-none fixed inset-y-0 z-50 flex focus:outline-none",
@@ -33,22 +42,26 @@ export function Drawer({ open, onClose, title, description, children, footer, si
               width === "md" ? "sm:max-w-md" : width === "lg" ? "sm:max-w-lg" : "sm:max-w-xl",
             )}
           >
-            <div className="flex items-start justify-between gap-4 border-b border-line px-5 py-4">
+            <div className="flex items-start justify-between gap-4 border-b border-line bg-app/30 px-6 py-4">
               <div className="min-w-0">
-                <Dialog.Title className="truncate text-sm font-semibold text-ink">{title}</Dialog.Title>
+                <Dialog.Title className="truncate text-base font-semibold tracking-tight text-ink">{title}</Dialog.Title>
                 {description ? (
-                  <Dialog.Description className="mt-0.5 text-xs text-muted">{description}</Dialog.Description>
+                  <Dialog.Description className="mt-0.5 text-xs text-muted leading-relaxed">{description}</Dialog.Description>
                 ) : null}
               </div>
               <Dialog.Close
                 aria-label="Close"
-                className="-m-1 rounded p-1 text-muted transition-colors duration-150 hover:bg-app hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="-m-1 rounded-input p-1 text-muted transition-colors duration-150 hover:bg-mint/40 hover:text-forest-dark focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-leaf"
               >
                 <LuX aria-hidden className="size-4" />
               </Dialog.Close>
             </div>
-            <div className="flex-1 overflow-y-auto px-5 py-4">{children}</div>
-            {footer ? <div className="flex items-center justify-end gap-2 border-t border-line px-5 py-3">{footer}</div> : null}
+            <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+            {footer ? (
+              <div className="flex items-center justify-end gap-2 border-t border-line bg-app/20 px-6 py-3.5">
+                {footer}
+              </div>
+            ) : null}
           </div>
         </Dialog.Content>
       </Dialog.Portal>

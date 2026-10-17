@@ -362,7 +362,7 @@ async function handleMockRequest<T>(method: string, path: string, options: MockR
     if (!record) err(404, "NOT_FOUND", "Record not found.");
     let blob = db.files.get(recordId);
     if (!blob) {
-      const text = `Continuity (mock)\nRecord: ${record.title}\nDate: ${record.record_date}\nHospital: ${record.hospital_name}\nDoctor: ${record.doctor_name}\n\n${record.remarks ?? ""}`;
+      const text = `CareThread (mock)\nRecord: ${record.title}\nDate: ${record.record_date}\nHospital: ${record.hospital_name}\nDoctor: ${record.doctor_name}\n\n${record.remarks ?? ""}`;
       blob = new Blob([text], { type: "application/pdf" });
       db.files.set(recordId, blob);
     }

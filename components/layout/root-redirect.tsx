@@ -3,6 +3,7 @@
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth/provider";
+import { CareThreadLogo, LeafSpinner } from "@/components/ui/botanical-icons";
 
 export function roleHome(role: string): string {
   return role === "patient" ? "/patient/timeline" : "/doctor/find";
@@ -22,8 +23,12 @@ export function RootRedirect() {
   }, [status, user, router]);
 
   return (
-    <div className="flex min-h-dvh items-center justify-center bg-app">
-      <p className="text-sm text-muted">Redirecting to your workspace.</p>
+    <div className="flex min-h-dvh flex-col items-center justify-center bg-app gap-4 select-none">
+      <CareThreadLogo size={44} showText textClassName="text-lg" />
+      <div className="flex items-center gap-2 text-xs text-muted">
+        <LeafSpinner size={16} />
+        <span>Loading CareThread workspace...</span>
+      </div>
     </div>
   );
 }

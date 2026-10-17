@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { LuFileText, LuFileUp, LuInfo, LuTrash2 } from "react-icons/lu";
+import { LuFileText, LuFileUp, LuInfo, LuPenLine, LuSparkles, LuTrash2 } from "react-icons/lu";
 import { api } from "@/lib/api/endpoints";
 import { ApiError } from "@/lib/api/errors";
 import { formatBytes, toInputDate } from "@/lib/utils";
@@ -12,16 +12,18 @@ import { FormBanner } from "@/components/forms/form-banner";
 import { UploadReviewForm, type ReviewDefaults } from "./upload-review-form";
 import { cn } from "@/lib/utils";
 
-const RECORD_TYPE_SUMMARY = "Visit, Prescription, Lab report, Vaccine, Imaging or Other.";
+const RECORD_TYPE_SUMMARY = "Visits, Prescriptions, Lab reports, Vaccines, Imaging, or Other clinical documents.";
 
 const MAX_SIZE = 10 * 1024 * 1024;
 const ACCEPTED_EXTENSIONS = [".pdf", ".jpg", ".jpeg", ".png"];
 
 function validateFile(file: File): string | null {
   const lower = file.name.toLowerCase();
-  const typeOk = ["application/pdf", "image/jpeg", "image/png"].includes(file.type) || ACCEPTED_EXTENSIONS.some((ext) => lower.endsWith(ext));
-  if (!typeOk) return "Unsupported file type. Use PDF, JPG or PNG.";
-  if (file.size > MAX_SIZE) return "File exceeds the 10 MB limit.";
+  const typeOk =
+    ["application/pdf", "image/jpeg", "image/png"].includes(file.type) ||
+    ACCEPTED_EXTENSIONS.some((ext) => lower.endsWith(ext));
+  if (!typeOk) return "Unsupported file type. Please upload a PDF, JPG, or PNG document.";
+  if (file.size > MAX_SIZE) return "The selected file exceeds the maximum 10 MB limit.";
   return null;
 }
 
@@ -107,7 +109,7 @@ export function UploadView() {
       });
     },
     onError: (error) => {
-      setExtractError(error instanceof ApiError ? error.message : "Extraction failed. You can still enter the details manually.");
+      setExtractError(error instanceof ApiError ? error.message : "Document analysis failed. You can proceed with manual entry.");
     },
   });
 
@@ -125,15 +127,16 @@ export function UploadView() {
   }
 
   return (
-    <div className="flex flex-col gap-5">
-      <Card className="max-w-3xl">
+    <div className="flex flex-col gap-6 max-w-3xl">
+      <Card className="shadow-card">
         <CardHeader
-          title="Select file"
-          description="A report photo or PDF. Extraction is optional; details can be entered manually."
+          title="Upload Medical Document"
+          description="Upload a photo or PDF of your discharge summary, prescription, or lab report. Automated extraction reads values for quick verification."
         />
-        <CardBody className="flex flex-col gap-4">
+        <CardBody className="flex flex-col gap-5">
           {fileError ? <FormBanner message={fileError} /> : null}
 
+          {/* Botanical Dropzone */}
           <div
             role="button"
             tabIndex={0}
@@ -154,14 +157,25 @@ export function UploadView() {
               if (dropped) acceptFile(dropped);
             }}
             className={cn(
-              "flex cursor-pointer flex-col items-center justify-center gap-2 rounded-card border border-dashed border-line-strong bg-app px-6 py-10 text-center transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-              dragging && "border-accent bg-accent-tint",
+              "group relative flex cursor-pointer flex-col items-center justify-center gap-3 rounded-card border-2 border-dashed p-8 sm:p-10 text-center transition-all duration-200 select-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf/25",
+              dragging
+                ? "border-forest bg-mint/60 scale-[1.01] shadow-leaf"
+                : "border-leaf/50 bg-gradient-to-b from-mint/25 to-surface hover:border-leaf hover:bg-mint/35",
             )}
           >
-            <LuFileUp aria-hidden className="size-6 text-muted" />
-            <p className="text-sm font-medium text-ink">Drop the file here or press to browse</p>
-            <p className="text-xs text-muted">PDF, JPG or PNG up to 10 MB</p>
+            <div className="flex size-14 items-center justify-center rounded-full bg-mint text-forest shadow-subtle group-hover:scale-110 transition-transform">
+              <LuFileUp aria-hidden className="size-6 text-leaf" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold tracking-tight text-forest-dark">
+                Drag and drop your medical file here, or <span className="text-leaf underline">browse files</span>
+              </p>
+              <p className="mt-1 text-xs text-muted">
+                Accepts PDF, JPG, or PNG files up to 10 MB
+              </p>
+            </div>
           </div>
+
           <input
             ref={inputRef}
             type="file"
@@ -173,47 +187,86 @@ export function UploadView() {
             }}
           />
 
+          {/* Selected File Card */}
           {file ? (
-            <div className="flex items-center gap-3 rounded-card border border-line bg-surface p-3">
+            <div className="flex items-center gap-3.5 rounded-card border border-leaf/40 bg-mint/20 p-3.5 shadow-subtle">
               {previewUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={previewUrl} alt="Selected file preview" className="size-12 shrink-0 rounded-input border border-line object-cover" />
+                <img
+                  src={previewUrl}
+                  alt="Selected file preview"
+                  className="size-12 shrink-0 rounded-input border border-line object-cover shadow-xs"
+                />
               ) : (
-                <LuFileText aria-hidden className="size-6 shrink-0 text-muted" />
+                <div className="flex size-12 shrink-0 items-center justify-center rounded-input bg-surface border border-line text-forest">
+                  <LuFileText aria-hidden className="size-6 text-leaf" />
+                </div>
               )}
               <div className="min-w-0 flex-1">
-                <p className="truncate text-sm font-medium text-ink">{file.name}</p>
+                <p className="truncate text-sm font-semibold text-ink">{file.name}</p>
                 <p className="text-xs text-muted">{formatBytes(file.size)}</p>
               </div>
-              <Button variant="ghost" size="sm" aria-label="Remove file" onClick={removeFile}>
-                <LuTrash2 aria-hidden className="size-3.5 text-danger" />
+              <Button
+                variant="ghost"
+                size="sm"
+                aria-label="Remove file"
+                onClick={removeFile}
+                className="text-danger hover:bg-danger-tint hover:text-danger"
+              >
+                <LuTrash2 aria-hidden className="size-4" />
               </Button>
             </div>
           ) : null}
 
           {extractError ? <FormBanner message={extractError} /> : null}
 
-          <div className="flex flex-wrap items-center gap-2 border-t border-line pt-4">
-            <Button loading={extract.isPending} disabled={!file} onClick={() => { setExtractError(null); extract.mutate(); }}>
-              Extract details
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center gap-3 border-t border-line pt-4">
+            <Button
+              variant="primary"
+              size="md"
+              loading={extract.isPending}
+              disabled={!file}
+              onClick={() => {
+                setExtractError(null);
+                extract.mutate();
+              }}
+              className="gap-2"
+            >
+              <LuSparkles aria-hidden className="size-4 text-accent-fresh" />
+              <span>Extract details with AI</span>
             </Button>
             <Button
               variant="secondary"
-              onClick={() => setReview({ defaults: emptyDefaults(), confidence: null, rawText: null, usedExtraction: false })}
+              size="md"
+              onClick={() =>
+                setReview({ defaults: emptyDefaults(), confidence: null, rawText: null, usedExtraction: false })
+              }
+              className="gap-2"
             >
-              Enter manually
+              <LuPenLine aria-hidden className="size-4" />
+              <span>Enter details manually</span>
             </Button>
-            {extract.isPending ? <p className="text-[13px] text-muted">Reading the document. This takes a moment.</p> : null}
+            {extract.isPending ? (
+              <p className="text-xs text-forest animate-pulse font-medium">
+                Analyzing clinical document... This takes a few seconds.
+              </p>
+            ) : null}
           </div>
 
-          <div className="flex items-start gap-2 rounded-input border border-info/30 bg-info-tint px-3 py-2.5 text-[13px] leading-5 text-info">
-            <LuInfo aria-hidden className="mt-0.5 size-4 shrink-0" />
-            <span>Extraction is automated and may read values incorrectly. Review every field before saving.</span>
+          {/* Verification Notice */}
+          <div className="flex items-start gap-2.5 rounded-input border border-info/20 bg-info-tint p-3 text-xs leading-relaxed text-info">
+            <LuInfo aria-hidden className="mt-0.5 size-4 shrink-0 text-leaf" />
+            <span>
+              Automated extraction reads medical dates, hospitals, dosages, and diagnoses. Because documents may be handwritten or varied, always review each extracted field before saving.
+            </span>
           </div>
         </CardBody>
       </Card>
 
-      <p className="text-xs text-muted">Record type: {RECORD_TYPE_SUMMARY} Choose the closest match; it can be corrected later.</p>
+      <p className="text-xs text-muted leading-relaxed">
+        Supported document categories: <span className="text-secondary font-medium">{RECORD_TYPE_SUMMARY}</span> You can re-categorize at any time during review.
+      </p>
     </div>
   );
 }

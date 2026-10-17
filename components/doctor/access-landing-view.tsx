@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardBody } from "@/components/ui/card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
+import { LeafSpinner } from "@/components/ui/botanical-icons";
 
 export function AccessLandingView() {
   const router = useRouter();
@@ -52,11 +53,12 @@ export function AccessLandingView() {
   if (!token) {
     return (
       <EmptyState
-        title="This link is incomplete."
-        description="Ask the patient for a new access code, then open it again."
+        title="Incomplete Access Link"
+        description="The access link does not contain a valid security token. Ask the patient for a new QR code or share link."
+        showPlant={false}
         action={
           <Button variant="secondary" size="sm" onClick={() => router.push("/doctor/find")}>
-            Go to Find patient
+            Go to Find Patient
           </Button>
         }
       />
@@ -65,12 +67,12 @@ export function AccessLandingView() {
 
   if (error) {
     return (
-      <Card className="mx-auto w-full max-w-lg">
-        <CardBody>
+      <Card className="mx-auto w-full max-w-lg shadow-card">
+        <CardBody className="p-6">
           <ErrorState message={error} />
-          <div className="mt-4 flex justify-center">
+          <div className="mt-5 flex justify-center">
             <Button variant="secondary" size="sm" onClick={() => router.push("/doctor/find")}>
-              Back to Find patient
+              Back to Find Patient
             </Button>
           </div>
         </CardBody>
@@ -79,8 +81,12 @@ export function AccessLandingView() {
   }
 
   return (
-    <div className="flex items-center justify-center py-16">
-      <p className="text-sm text-muted">{pending ? "Opening the shared record." : "Checking the access code."}</p>
+    <div className="flex flex-col items-center justify-center py-20 gap-3">
+      <LeafSpinner size={32} />
+      <p className="text-sm font-medium text-forest-dark">
+        {pending ? "Opening verified patient record..." : "Validating patient consent token..."}
+      </p>
+      <p className="text-xs text-muted">Establishing secure read-only consultation window</p>
     </div>
   );
 }

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
+import { LuLogIn } from "react-icons/lu";
 import { api } from "@/lib/api/endpoints";
 import { ApiError } from "@/lib/api/errors";
 import { loginSchema } from "@/lib/schemas";
@@ -39,18 +40,18 @@ export function LoginView() {
     try {
       const user = await api.auth.login(values);
       queryClient.setQueryData(["me"], user);
-      toast("Signed in.");
+      toast("Signed in successfully.");
       router.replace(safeNextPath(params.get("next"), roleHome(user.role)));
     } catch (error) {
-      setServerError(error instanceof ApiError ? error.message : "Could not sign in. Try again.");
+      setServerError(error instanceof ApiError ? error.message : "Could not sign in. Please verify your credentials.");
     }
   }
 
   return (
     <div>
       {serverError ? <FormBanner message={serverError} /> : null}
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4" noValidate>
-        <Field id="email" label="Email" required error={errors.email?.message}>
+      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4.5" noValidate>
+        <Field id="email" label="Email address" required error={errors.email?.message}>
           <Input
             id="email"
             type="email"
@@ -65,12 +66,14 @@ export function LoginView() {
             id="password"
             type="password"
             autoComplete="current-password"
+            placeholder="••••••••"
             invalid={!!errors.password}
             {...register("password")}
           />
         </Field>
-        <Button type="submit" loading={isSubmitting} className="mt-1 w-full">
-          Sign in
+        <Button type="submit" loading={isSubmitting} size="lg" className="mt-2 w-full gap-2">
+          <LuLogIn aria-hidden className="size-4" />
+          <span>Sign in to CareThread</span>
         </Button>
       </form>
     </div>

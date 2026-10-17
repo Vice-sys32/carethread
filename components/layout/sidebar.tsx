@@ -2,9 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { LuLogOut } from "react-icons/lu";
+import { LuLogOut, LuShieldCheck } from "react-icons/lu";
 import { cn } from "@/lib/utils";
 import { PATIENT_NAV, DOCTOR_NAV, type NavItem } from "./nav";
+import { CareThreadLogo } from "@/components/ui/botanical-icons";
 import type { Role } from "@/types";
 
 interface SidebarProps {
@@ -23,17 +24,32 @@ export function Sidebar({ role, onLogout, fixed = true, onNavigate, className }:
   return (
     <aside
       className={cn(
-        "flex w-60 shrink-0 flex-col bg-surface",
-        fixed ? "fixed inset-y-0 left-0 z-30 hidden border-r border-line md:flex" : "h-full border-r border-line",
+        "flex w-64 shrink-0 flex-col bg-surface border-r border-line",
+        fixed ? "fixed inset-y-0 left-0 z-30 hidden md:flex" : "h-full",
         className,
       )}
     >
-      <div className="border-b border-line px-5 py-4">
-        <p className="text-[15px] font-semibold text-ink">Continuity</p>
-        <p className="text-xs text-muted">Medical records</p>
+      {/* Brand Header */}
+      <div className="border-b border-line px-5 py-4.5 bg-surface">
+        <Link href={role === "patient" ? "/patient/timeline" : "/doctor/find"} className="flex items-center gap-2.5 group">
+          <CareThreadLogo size={34} />
+          <div className="flex flex-col">
+            <span className="text-base font-semibold leading-tight tracking-tight text-ink group-hover:text-forest transition-colors">
+              CareThread
+            </span>
+            <span className="text-[11px] font-medium leading-none text-muted">
+              {role === "patient" ? "Patient Portal" : "Clinical Portal"}
+            </span>
+          </div>
+        </Link>
       </div>
-      <nav className="flex-1 overflow-y-auto p-3" aria-label="Main">
-        <ul className="flex flex-col gap-0.5">
+
+      {/* Main Navigation */}
+      <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Main navigation">
+        <p className="px-3 pb-2 text-[11px] font-semibold uppercase tracking-wider text-muted/80">
+          Navigation
+        </p>
+        <ul className="flex flex-col gap-1">
           {nav.map((item) => {
             const active = pathname === item.href || pathname.startsWith(`${item.href}/`);
             return (
@@ -43,25 +59,42 @@ export function Sidebar({ role, onLogout, fixed = true, onNavigate, className }:
                   aria-current={active ? "page" : undefined}
                   onClick={onNavigate}
                   className={cn(
-                    "flex items-center gap-2.5 rounded-input px-3 py-2 text-sm font-medium transition-colors duration-150 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent",
-                    active ? "bg-accent-tint text-accent-strong" : "text-secondary hover:bg-app hover:text-ink",
+                    "flex items-center gap-3 rounded-input px-3 py-2.5 text-sm font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-leaf/25",
+                    active
+                      ? "bg-mint text-forest font-semibold shadow-subtle border border-leaf/20"
+                      : "text-secondary hover:bg-mint/35 hover:text-forest-dark",
                   )}
                 >
-                  <item.icon aria-hidden className="size-4" />
-                  {item.label}
+                  <item.icon
+                    aria-hidden
+                    className={cn(
+                      "size-4.5 shrink-0 transition-colors",
+                      active ? "text-forest" : "text-muted group-hover:text-forest",
+                    )}
+                  />
+                  <span className="truncate">{item.label}</span>
+                  {active ? (
+                    <span className="ml-auto size-1.5 rounded-full bg-forest shrink-0" aria-hidden="true" />
+                  ) : null}
                 </Link>
               </li>
             );
           })}
         </ul>
       </nav>
-      <div className="border-t border-line p-3">
+
+      {/* Privacy Assurance & Logout Footer */}
+      <div className="border-t border-line p-3 bg-app/30 flex flex-col gap-2">
+        <div className="flex items-center gap-2 rounded-input bg-mint/50 px-3 py-2 text-[11px] font-medium text-forest-dark border border-leaf/15">
+          <LuShieldCheck aria-hidden className="size-4 shrink-0 text-leaf" />
+          <span>Patient-Consent Secured</span>
+        </div>
         <button
           type="button"
           onClick={onLogout}
-          className="flex w-full items-center gap-2.5 rounded-input px-3 py-2 text-sm font-medium text-secondary transition-colors duration-150 hover:bg-app hover:text-ink focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          className="flex w-full items-center gap-3 rounded-input px-3 py-2 text-sm font-medium text-secondary transition-all duration-150 hover:bg-danger-tint hover:text-danger focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-danger/25"
         >
-          <LuLogOut aria-hidden className="size-4" />
+          <LuLogOut aria-hidden className="size-4 shrink-0" />
           Log out
         </button>
       </div>
