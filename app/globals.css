@@ -1,0 +1,210 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "Cascadia Mono", Consolas, monospace;
+
+  /* Bulbasaur Botanical Color System */
+  --color-forest: #245c3a;
+  --color-forest-dark: #183b2a;
+  --color-leaf: #57a65c;
+  --color-leaf-fresh: #82c96b;
+  --color-mint: #e1f3e5;
+  --color-mint-light: #f4faf3;
+  --color-cream: #fffdf5;
+
+  /* App Theme Tokens */
+  --color-app: #f4faf3;
+  --color-surface: #ffffff;
+  --color-surface-cream: #fffdf5;
+  --color-surface-subtle: #f8fcf8;
+  --color-line: #d5e6d6;
+  --color-line-strong: #b8d4bb;
+  --color-ink: #183b2a;
+  --color-secondary: #3b5c47;
+  --color-muted: #607968;
+
+  /* Primary Accent: Forest Green with Leaf & Mint Accents */
+  --color-accent: #245c3a;
+  --color-accent-strong: #183b2a;
+  --color-accent-hover: #1e4d30;
+  --color-accent-leaf: #57a65c;
+  --color-accent-tint: #e1f3e5;
+  --color-accent-fresh: #82c96b;
+
+  /* Clinical Status Tokens */
+  --color-success: #245c3a;
+  --color-success-leaf: #57a65c;
+  --color-success-tint: #e1f3e5;
+  --color-warning: #9a590b;
+  --color-warning-tint: #fef5e7;
+  --color-danger: #b42318;
+  --color-danger-tint: #fcecea;
+  --color-info: #166534;
+  --color-info-tint: #e6f4ea;
+
+  --color-slate-tint: #e8efe9;
+  --color-slate-ink: #294334;
+  --color-gray-tint: #eef4ee;
+
+  --radius-input: 8px;
+  --radius-card: 12px;
+  --radius-badge: 6px;
+  --radius-pill: 9999px;
+
+  --shadow-subtle: 0 1px 3px rgba(24, 59, 42, 0.04), 0 1px 2px rgba(24, 59, 42, 0.02);
+  --shadow-card: 0 4px 14px -2px rgba(24, 59, 42, 0.05), 0 2px 6px -1px rgba(24, 59, 42, 0.03);
+  --shadow-card-hover: 0 8px 24px -4px rgba(24, 59, 42, 0.09), 0 4px 10px -2px rgba(24, 59, 42, 0.04);
+  --shadow-overlay: 0 16px 36px -4px rgba(24, 59, 42, 0.16), 0 6px 14px -2px rgba(24, 59, 42, 0.08);
+  --shadow-leaf: 0 4px 12px rgba(87, 166, 92, 0.2);
+}
+
+@layer base {
+  html {
+    font-size: 16px;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-app font-sans text-sm leading-relaxed text-ink antialiased selection:bg-mint selection:text-forest-dark;
+  }
+
+  ::placeholder {
+    @apply text-muted;
+  }
+
+  /* Botanical scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #d5e6d6;
+    border-radius: 9999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #b8d4bb;
+  }
+}
+
+/* Subtle botanical grid pattern */
+.botanical-pattern {
+  background-image: radial-gradient(#57a65c 0.75px, transparent 0.75px);
+  background-size: 24px 24px;
+  opacity: 0.25;
+}
+
+/* Minimal organic entrance transitions for overlays */
+@keyframes overlay-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes drawer-in {
+  from {
+    opacity: 0;
+    transform: translateX(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes drawer-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes leaf-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+.overlay-anim[data-state="open"] {
+  animation: overlay-in 180ms ease-out;
+}
+
+.modal-anim[data-state="open"] {
+  animation: modal-in 200ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-anim[data-state="open"] {
+  animation: drawer-in 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.drawer-anim-left[data-state="open"] {
+  animation: drawer-in-left 220ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.toast-anim {
+  animation: toast-in 180ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.leaf-pulse {
+  animation: leaf-pulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+@media print {
+  body {
+    background: #ffffff !important;
+  }
+  header,
+  aside,
+  nav,
+  button:not(.printable) {
+    display: none !important;
+  }
+}

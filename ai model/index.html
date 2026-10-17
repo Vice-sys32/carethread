@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bulbasaur Chat</title>
+  <link rel="icon" type="image/png" href="assets/avatar.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- App Container -->
+  <div class="app-layout" id="app-layout">
+    
+    <!-- Mobile Backdrop Overlay -->
+    <div class="mobile-overlay" id="mobile-overlay" aria-hidden="true"></div>
+
+    <!-- Left Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Chat sidebar">
+      <!-- Faint leaf pattern decoration background -->
+      <div class="sidebar-leaf-decor top" aria-hidden="true"></div>
+      
+      <!-- Sidebar Header -->
+      <div class="sidebar-header">
+        <div class="sidebar-branding">
+          <img src="assets/avatar.png" alt="Bulbasaur avatar" class="sidebar-avatar">
+          <span class="sidebar-brand-name">Bulbasaur Chat</span>
+        </div>
+        <button id="sidebar-collapse-btn" class="icon-btn" title="Collapse sidebar" aria-label="Collapse sidebar">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+            <path d="M9 3v18"/>
+            <path d="m14 9-3 3 3 3"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- New Chat Button -->
+      <div class="sidebar-action">
+        <button id="new-chat-btn" class="new-chat-btn" type="button">
+          <!-- Pokeball icon -->
+          <svg class="pokeball-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+            <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
+            <line x1="2" y1="12" x2="22" y2="12" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="3.5" fill="var(--color-bg-sidebar)" stroke="currentColor" stroke-width="2"/>
+            <circle cx="12" cy="12" r="1.5" fill="currentColor"/>
+          </svg>
+          <span>New chat</span>
+          <svg class="plus-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="12" y1="5" x2="12" y2="19"/>
+            <line x1="5" y1="12" x2="19" y2="12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Past Chats Scrollable List -->
+      <div class="sidebar-chats-container">
+        <div class="sidebar-chats-header">Past Chats</div>
+        <div class="chat-list" id="chat-list" role="list">
+          <!-- Populated dynamically by script.js -->
+        </div>
+      </div>
+
+      <!-- Faint leaf pattern decoration bottom -->
+      <div class="sidebar-leaf-decor bottom" aria-hidden="true"></div>
+
+      <!-- Sidebar Footer: Sun / Moon Theme Toggle -->
+      <div class="sidebar-footer">
+        <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" title="Switch between Forest Night and Sunny Meadow">
+          <span class="theme-icon-container" id="theme-icon">
+            <!-- Rendered by script.js (Sun or Moon SVG) -->
+          </span>
+          <span id="theme-label" class="theme-label">Forest Night</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Chat Area -->
+    <main class="main-content" id="main-content">
+      <!-- Subtle sleeping Bulbasaur background texture -->
+      <div class="sleeping-bg-texture" aria-hidden="true"></div>
+
+      <!-- Slim Top Bar -->
+      <header class="top-bar">
+        <div class="top-bar-left">
+          <button id="mobile-menu-btn" class="icon-btn mobile-only" title="Open sidebar" aria-label="Open sidebar">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="3" y1="12" x2="21" y2="12"/>
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="18" x2="21" y2="18"/>
+            </svg>
+          </button>
+          <button id="sidebar-expand-btn" class="icon-btn desktop-expand-btn" title="Expand sidebar" aria-label="Expand sidebar" style="display: none;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect width="18" height="18" x="3" y="3" rx="2" ry="2"/>
+              <path d="M9 3v18"/>
+              <path d="m11 9 3 3-3 3"/>
+            </svg>
+          </button>
+          <div class="top-bar-title">Bulbasaur Chat</div>
+        </div>
+        <div class="top-bar-right">
+          <span class="model-badge" id="model-badge" title="Active LM Studio model">local-model</span>
+        </div>
+      </header>
+
+      <!-- Scrollable Message & Hero Viewport -->
+      <div class="chat-viewport" id="chat-viewport">
+        <div class="chat-column">
+          <!-- Empty State Hero (shown when active chat has no messages) -->
+          <div class="hero-container" id="hero-container">
+            <div class="hero-image-wrapper">
+              <img src="assets/bulba-pokeball-hero.jpg" alt="Bulbasaur in Pokeball terrarium" class="hero-image">
+            </div>
+            <h1 class="hero-greeting">What are we growing today, trainer?</h1>
+            <p class="hero-subtitle">Ask anything or pick a quick prompt to start our journey.</p>
+            
+            <div class="suggestion-chips" id="suggestion-chips">
+              <button class="suggestion-chip" type="button" data-prompt="Tell me a joke">
+                <span class="chip-leaf">🌱</span>
+                <span>Tell me a joke</span>
+              </button>
+              <button class="suggestion-chip" type="button" data-prompt="Explain APIs like I'm 10">
+                <span class="chip-leaf">🍃</span>
+                <span>Explain APIs like I'm 10</span>
+              </button>
+              <button class="suggestion-chip" type="button" data-prompt="What's your favorite berry?">
+                <span class="chip-leaf">🫐</span>
+                <span>What's your favorite berry?</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Chat Message Feed -->
+          <div class="messages-feed" id="messages-feed" role="log" aria-live="polite">
+            <!-- Populated dynamically by script.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom Pill Input Area -->
+      <footer class="input-container">
+        <div class="input-column">
+          <form class="pill-form" id="chat-form" autocomplete="off">
+            <textarea
+              id="user-input"
+              class="pill-textarea"
+              placeholder="Ask Bulbasaur anything..."
+              rows="1"
+              maxlength="10000"
+              required
+            ></textarea>
+
+            <button
+              id="send-stop-btn"
+              class="pill-action-btn"
+              type="submit"
+              title="Send message"
+              aria-label="Send message"
+            >
+              <!-- Arrow up or Pokéball icon -->
+              <svg class="send-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="19" x2="12" y2="5"/>
+                <polyline points="5 12 12 5 19 12"/>
+              </svg>
+              <!-- Stop icon (shown while generating) -->
+              <svg class="stop-icon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <rect x="5" y="5" width="14" height="14" rx="2.5"/>
+              </svg>
+            </button>
+          </form>
+
+          <p class="footer-note">Bulbasaur can make mistakes. It's a small local model, after all.</p>
+        </div>
+      </footer>
+    </main>
+
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
